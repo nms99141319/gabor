@@ -1,0 +1,279 @@
+/* ===================== 設計原則 =====================
+   - 純黑白灰階為主，不依賴彩色傳遞資訊（色弱友善）
+   - 大字體、大按鈕，方便觸控閱讀
+   - 高對比（黑字白底 / 白字黑底）
+=============================================================== */
+
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --gray-dark: #333333;
+  --gray-mid: #777777;
+  --gray-light: #cccccc;
+  --accent: #1a1a1a;
+  --focus-outline: #555555;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--white);
+  color: var(--black);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 28px;
+  text-align: center;
+  margin: 16px 0;
+  border-bottom: 3px solid var(--black);
+  padding-bottom: 8px;
+}
+
+h2 {
+  font-size: 22px;
+  margin: 0 0 12px 0;
+}
+
+.screen {
+  display: none;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 20px 40px 20px;
+}
+
+.screen.active {
+  display: block;
+}
+
+.card {
+  border: 2px solid var(--black);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.hint {
+  color: var(--gray-dark);
+  font-size: 16px;
+  margin: 8px 0 0 0;
+}
+
+/* ---------- 按鈕群組 ---------- */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.opt-btn {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 140px;
+  padding: 16px 10px;
+  font-size: 18px;
+  border: 3px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.opt-btn.selected {
+  background: var(--black);
+  color: var(--white);
+}
+
+.opt-btn:active {
+  background: var(--gray-light);
+}
+
+/* ---------- 主要按鈕 ---------- */
+.primary-btn {
+  display: block;
+  width: 100%;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  background: var(--black);
+  color: var(--white);
+  border: 3px solid var(--black);
+  border-radius: 8px;
+  margin: 20px 0 10px 0;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 20px;
+  background: var(--white);
+  color: var(--black);
+  border: 3px solid var(--black);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.small-btn {
+  padding: 8px;
+  font-size: 16px;
+  max-width: 200px;
+  margin: 10px auto 0 auto;
+  flex-shrink: 0;
+}
+
+/* ---------- 軸度輸入 ---------- */
+.axis-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.axis-row input[type="number"] {
+  font-size: 20px;
+  width: 90px;
+  padding: 6px;
+  border: 2px solid var(--black);
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+/* ---------- 跨裝置同步文字碼 ---------- */
+.card textarea {
+  width: 100%;
+  font-size: 14px;
+  font-family: monospace;
+  padding: 8px;
+  border: 2px solid var(--black);
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+/* ---------- 時間滑桿 ---------- */
+.slider-row {
+  margin-top: 16px;
+}
+
+.slider-row input[type="range"] {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.checkbox-row input {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- 訓練畫面：整頁塞進單一視窗高度，避免需要捲動 ---------- */
+#screen-cover {
+  text-align: center;
+  padding-top: 60px;
+}
+
+#screen-training.active {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh; /* 行動裝置網址列高度變動時仍可準確填滿 */
+  max-width: 720px;
+  padding: 10px 16px 14px 16px;
+  margin: 0 auto;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 2px solid var(--black);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.canvas-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto;
+  min-height: 0; /* 讓 flex 子項可以正確縮小，不被 canvas 原始尺寸撐破版面 */
+  margin: 6px 0;
+}
+
+#gabor-canvas {
+  border: 2px solid var(--black);
+  background: #808080;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.instruction {
+  text-align: center;
+  font-size: 20px;
+  margin: 8px 0;
+  min-height: 30px;
+  flex-shrink: 0;
+}
+
+.response-group {
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: 76px; /* 固定預留按鈕高度，避免答題按鈕出現前後版面跳動，導致動畫畫面忽大忽小 */
+}
+
+.response-group .opt-btn {
+  flex: 1 1 calc(33% - 10px);
+  font-size: 22px;
+  padding: 16px 10px;
+}
+
+.feedback {
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  min-height: 40px;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.feedback.correct::before {
+  content: "✓ 答對了";
+}
+
+.feedback.incorrect::before {
+  content: "✗ 答錯了";
+}
+
+/* ---------- 歷史紀錄表格 ---------- */
+table.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+table.history-table th,
+table.history-table td {
+  border: 1px solid var(--black);
+  padding: 6px 8px;
+  text-align: center;
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gabor Patch 視覺訓練</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== 設定畫面 ===================== -->
+<section id="screen-setup" class="screen active">
+  <h1>Gabor Patch 視覺訓練</h1>
+
+  <div class="card" id="progress-card">
+    <h2>📅 建議訓練排程與進度</h2>
+    <p class="hint">研究顯示：規律練習比單次久更重要。建議<strong>每天練習 2~3 次、每次 3~5 分鐘</strong>，並至少<strong>連續 4~6 週</strong>才比較能看到閾值明顯下降；之後可改為每週 2~3 次維持效果。</p>
+    <p id="today-progress-text" class="hint"></p>
+  </div>
+
+  <div class="card">
+    <h2>1. 選擇訓練眼別</h2>
+    <div class="btn-group" id="eye-group">
+      <button class="opt-btn" data-eye="right">右眼</button>
+      <button class="opt-btn" data-eye="left">左眼</button>
+      <button class="opt-btn selected" data-eye="alt">雙眼輪替（建議）</button>
+      <button class="opt-btn" data-eye="both">雙眼同時</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. 散光軸度設定（度）</h2>
+    <div class="axis-row">
+      <label>右眼軸度：<input type="number" id="axis-right" value="0" min="0" max="180"></label>
+      <label>左眼軸度：<input type="number" id="axis-left" value="0" min="0" max="180"></label>
+    </div>
+    <p class="hint">會自動記住你上次輸入的數值；沒有散光請填 0 或留意輸入你的驗光軸度。</p>
+  </div>
+
+  <div class="card">
+    <h2>3. 訓練模式</h2>
+    <div class="btn-group" id="mode-group">
+      <button class="opt-btn" data-mode="astig">方向辨別（散光導向）</button>
+      <button class="opt-btn" data-mode="myopia">對比敏感度（近視導向）</button>
+      <button class="opt-btn selected" data-mode="mixed">混合交替（建議）</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4. 難度</h2>
+    <div class="btn-group" id="difficulty-group">
+      <button class="opt-btn" data-diff="easy">簡單</button>
+      <button class="opt-btn" data-diff="medium">中等</button>
+      <button class="opt-btn" data-diff="hard">困難</button>
+      <button class="opt-btn selected" data-diff="auto">自動調整（建議）</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>5. 訓練時間</h2>
+    <div class="btn-group" id="duration-group">
+      <button class="opt-btn selected" data-min="3">3 分鐘</button>
+      <button class="opt-btn" data-min="4">4 分鐘</button>
+      <button class="opt-btn" data-min="5">5 分鐘</button>
+    </div>
+    <div class="slider-row">
+      <label for="duration-custom">自訂：<span id="duration-custom-val">3</span> 分鐘</label>
+      <input type="range" id="duration-custom" min="1" max="30" value="3">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>6. 其他設定</h2>
+    <label class="checkbox-row">
+      <input type="checkbox" id="sound-feedback">
+      答題音效提示
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>7. 跨裝置同步（文字碼）</h2>
+    <p class="hint">把散光軸度與難度閾值匯出成一段文字，貼到其他裝置即可同步（不含訓練歷史紀錄）。</p>
+    <button id="btn-sync-export" class="secondary-btn">產生同步碼</button>
+    <div id="sync-export-area" style="display:none;">
+      <textarea id="sync-export-text" readonly rows="4"></textarea>
+      <button id="btn-sync-copy" class="small-btn">複製</button>
+      <span id="sync-copy-status" class="hint"></span>
+    </div>
+    <p class="hint" style="margin-top:12px;">在其他裝置貼上同步碼：</p>
+    <textarea id="sync-import-text" rows="4" placeholder="貼上同步碼到這裡"></textarea>
+    <button id="btn-sync-import" class="secondary-btn">匯入同步碼</button>
+    <span id="sync-import-status" class="hint"></span>
+  </div>
+
+  <button id="btn-start" class="primary-btn">開始訓練</button>
+  <button id="btn-history" class="secondary-btn">查看歷史紀錄</button>
+</section>
+
+<!-- ===================== 遮眼提示畫面 ===================== -->
+<section id="screen-cover" class="screen">
+  <h1 id="cover-text">請遮住左眼</h1>
+  <p class="hint">準備好後請按下方按鈕繼續</p>
+  <button id="btn-cover-continue" class="primary-btn">我準備好了，繼續</button>
+</section>
+
+<!-- ===================== 訓練畫面 ===================== -->
+<section id="screen-training" class="screen">
+  <div class="top-bar">
+    <div id="timer-display">03:00</div>
+    <div id="trial-display">第 1 題</div>
+    <div id="eye-display"></div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="gabor-canvas" width="500" height="500"></canvas>
+  </div>
+
+  <p id="instruction-text" class="instruction"></p>
+
+  <div class="btn-group response-group" id="response-group">
+    <!-- 動態產生回應按鈕 -->
+  </div>
+
+  <div id="feedback-display" class="feedback"></div>
+
+  <button id="btn-abort" class="secondary-btn small-btn">結束訓練</button>
+</section>
+
+<!-- ===================== 總結畫面 ===================== -->
+<section id="screen-summary" class="screen">
+  <h1>訓練結束</h1>
+  <div id="summary-content" class="card"></div>
+  <button id="btn-back-setup" class="primary-btn">返回設定</button>
+</section>
+
+<!-- ===================== 歷史紀錄畫面 ===================== -->
+<section id="screen-history" class="screen">
+  <h1>歷史紀錄</h1>
+  <div id="history-content" class="card"></div>
+  <button id="btn-clear-history" class="secondary-btn">清除紀錄</button>
+  <button id="btn-history-back" class="primary-btn">返回設定</button>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
