@@ -1,5 +1,7 @@
 # Gabor Patch 視覺訓練
 
+繁體中文 | [English](README.en.md)
+
 一個純前端（HTML + CSS + JavaScript，無後端、無資料庫）的視覺訓練網頁工具，
 在一般 LCD/OLED 螢幕上，以短暫閃現 Gabor patch（高斯包絡的條紋圖樣）的方式，
 協助散光（方向辨別）與對比敏感度（類近視訓練）的練習。介面採高對比、
